@@ -25,7 +25,7 @@ onMounted(async () => {
     {
         // Rapier Physics
         await RAPIER.init({});
-        const gravity = new RAPIER.Vector3(0.0, -2.0, 0.0);
+        const gravity = new RAPIER.Vector3(0.0, -0.85, 0.0);
         world = new RAPIER.World(gravity);
 
         const width = window.innerWidth;
@@ -79,7 +79,7 @@ onMounted(async () => {
 
             world.step();
             mousePointer.update(mousePos);
-            bodies.forEach(b => b.update());
+            for (let i = 0; i < bodies.length; i++) bodies[i].update();
             composer.render();
             animationID = requestAnimationFrame(animate);
         }
