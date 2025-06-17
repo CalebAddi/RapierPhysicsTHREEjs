@@ -43,7 +43,7 @@ onMounted(async () => {
         const composer = lighting(camera, renderer, scene);
 
         // Scene Objects
-        const numObj = 60;
+        const numObj = 70;
         const bodies = [];
         for (let i = 0; i < numObj; i++)
         {
@@ -99,39 +99,24 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-    isDestroyed = true;
-
-    if (animationID)
+    try
     {
-        cancelAnimationFrame(animationID);
-        animationID = null;
-    }
+        isDestroyed = true;
 
-    if (world)
+        animationID && cancelAnimationFrame(animationID);
+        world?.free();
+        renderer?.dispose();
+        cleanMouseEvents?.();
+        cleanupResize?.();
+        scene.clear();
+
+        [animationID, world, renderer, cleanMouseEvents, cleanupResize] = Array(5).fill(null);
+    }
+    catch (error)
     {
-        world.free();
-        world = null;
+        console.warn('Error during unmount: ', error);
     }
-
-    if (renderer)
-    {
-        renderer.dispose();
-        renderer = null;
-    }
-
-    if (cleanMouseEvents)
-    {
-        cleanMouseEvents();
-        cleanMouseEvents = null;
-    }
-
-    if (cleanupResize)
-    {
-        cleanupResize();
-    }
-
-    scene.clear();
-    });
+});
 
 </script>
 
