@@ -25,7 +25,7 @@ onMounted(async () => {
     {
         // Rapier Physics
         await RAPIER.init({});
-        const gravity = new RAPIER.Vector3(0.0, -0.85, 0.0);
+        const gravity = new RAPIER.Vector3(0.0, -0.9, 0.0);
         world = new RAPIER.World(gravity);
 
         const width = window.innerWidth;
