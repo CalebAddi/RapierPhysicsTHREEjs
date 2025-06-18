@@ -43,7 +43,7 @@ onMounted(async () => {
         const composer = lighting(camera, renderer, scene);
 
         // Scene Objects
-        const numObj = 70;
+        const numObj = 80;
         const bodies = [];
         for (let i = 0; i < numObj; i++)
         {

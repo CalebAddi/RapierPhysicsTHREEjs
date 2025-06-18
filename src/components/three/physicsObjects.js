@@ -4,7 +4,7 @@ const middleScene = new Vector3(0, 0, 0);
 
 export function getBody(RAPIER, world)
 {
-    const size = 0.15 + Math.random() * 0.25;
+    const size = 0.2 + Math.random() * 0.3;
     const range = 7;
     const density = size * 2.0;
     let x = Math.random() * range - range * 0.5;
@@ -28,21 +28,47 @@ export function getBody(RAPIER, world)
     const wireMat = new MeshBasicMaterial({
         color: 0xff444f,
         transparent: true,
-        opacity: 0.3,
-        // wireframe: true
+        opacity: 0.3
     });
     const wireMesh = new Mesh(geometry, wireMat);
     wireMesh.scale.setScalar(1.001);
     mesh.add(wireMesh);
 
-    // Magnitize objects to center of the scene
+    // Random floating ball behavior
+    const isFloating = Math.random() < 0.3;
+    const floatDir = Math.random() < 0.5 ? 1 : -1;
+    const floatSpeed = (size * 0.05) + Math.random() * 0.002; // Scale speed based on size
+    let floatPhase = Math.random() * Math.PI * 2; // Random starting phase
+
     function update()
     {
         rigid.resetForces(true);
         let { x, y, z } = rigid.translation();
-        let pos = new Vector3(x, y, z);
-        let dir = pos.clone().sub(middleScene).normalize();
-        rigid.addForce(dir.multiplyScalar(-0.5), true);
+        
+        if (isFloating)
+        {
+            // Float behavior
+            floatPhase += 0.008 * floatSpeed;
+
+            const floatForce = Math.sin(floatPhase) * 0.3 * floatDir;
+            
+            // Apply return force when far from center
+            const returnStrength = Math.max(0, (Math.abs(y) - 8) * 0.25);
+            const returnForce = y > 0 ? -returnStrength : returnStrength;
+            
+            rigid.addForce(new Vector3(0, floatForce + returnForce, 0), true);
+            
+            const centerPull = new Vector3(x, 0, z).normalize().multiplyScalar(-0.1);
+            rigid.addForce(centerPull, true);
+        }
+        else
+        {
+            // Original magnetization behavior for non-floating balls
+            let pos = new Vector3(x, y, z);
+            let dir = pos.clone().sub(middleScene).normalize();
+            rigid.addForce(dir.multiplyScalar(-0.5), true);
+        }
+        
         mesh.position.set(x, y, z);
     }
 
