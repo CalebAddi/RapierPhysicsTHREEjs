@@ -53,7 +53,7 @@ export function getBody(RAPIER, world)
             const floatForce = Math.sin(floatPhase) * 0.3 * floatDir;
             
             // Apply return force when far from center
-            const returnStrength = Math.max(0, (Math.abs(y) - 8) * 0.25);
+            const returnStrength = Math.max(0, (Math.abs(y) - 5) * 0.25);
             const returnForce = y > 0 ? -returnStrength : returnStrength;
             
             rigid.addForce(new Vector3(0, floatForce + returnForce, 0), true);
